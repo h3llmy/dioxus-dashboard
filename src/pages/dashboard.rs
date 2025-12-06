@@ -1,8 +1,8 @@
 use dioxus::prelude::*;
 
-/// Home page
+/// Dashboard page
 #[component]
-pub fn Home() -> Element {
+pub fn Dashboard() -> Element {
     rsx! {
         div {
             "nice to meet you guys here"

@@ -1,13 +1,15 @@
 use dioxus::prelude::*;
 
+use crate::routes::Route;
+
 const LOGO_URL: Asset = asset!("/assets/favicon.ico");
 
 #[component]
 pub fn NavbarLogo() -> Element {
     rsx! {
-        a {
+        Link {
             class: "flex ms-2 md:me-24",
-            href: "https://flowbite.com",
+            to: Route::Dashboard {},
 
             img {
                 alt: "FlowBite Logo",
