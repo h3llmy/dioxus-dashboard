@@ -1,15 +1,16 @@
 use dioxus::prelude::*;
 use crate::components::sidebar::menu::MenuItem;
 
+#[component]
 pub fn menu_items() -> Vec<MenuItem> {
     vec![
-        MenuItem { label: "Dashboard".into(), href: "#".into(), icon: icons::icon_1 },
-        MenuItem { label: "Kanban".into(),    href: "#".into(), icon: icons::icon_2 },
-        MenuItem { label: "Inbox".into(),     href: "#".into(), icon: icons::icon_3 },
-        MenuItem { label: "Users".into(),     href: "#".into(), icon: icons::icon_4 },
-        MenuItem { label: "Products".into(),  href: "#".into(), icon: icons::icon_5 },
-        MenuItem { label: "Sign In".into(),   href: "#".into(), icon: icons::icon_6 },
-        MenuItem { label: "Sign Up".into(),   href: "#".into(), icon: icons::icon_7 },
+        MenuItem { label: "Dashboard".into(), href: "/dashboard".into(), icon: icons::icon_1 },
+        MenuItem { label: "Kanban".into(),    href: "/kanban".into(), icon: icons::icon_2 },
+        MenuItem { label: "Inbox".into(),     href: "/inbox".into(), icon: icons::icon_3 },
+        MenuItem { label: "Users".into(),     href: "/users".into(), icon: icons::icon_4 },
+        MenuItem { label: "Products".into(),  href: "/products".into(), icon: icons::icon_5 },
+        MenuItem { label: "Sign In".into(),   href: "/signin".into(), icon: icons::icon_6 },
+        MenuItem { label: "Sign Up".into(),   href: "/signup".into(), icon: icons::icon_7 },
     ]
 }
 
