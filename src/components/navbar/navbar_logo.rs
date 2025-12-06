@@ -1,5 +1,7 @@
 use dioxus::prelude::*;
 
+const LOGO_URL: Asset = asset!("/assets/favicon.ico");
+
 #[component]
 pub fn NavbarLogo() -> Element {
     rsx! {
@@ -10,12 +12,12 @@ pub fn NavbarLogo() -> Element {
             img {
                 alt: "FlowBite Logo",
                 class: "h-8 me-3",
-                src: "https://flowbite.com/docs/images/logo.svg",
+                src: LOGO_URL,
             }
 
             span {
                 class: "self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white",
-                "Flowbite"
+                "Dashboard"
             }
         }
     }
