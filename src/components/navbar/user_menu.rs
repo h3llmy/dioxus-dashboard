@@ -35,8 +35,8 @@ pub fn UserMenu(user_menu_open: Signal<bool>) -> Element {
 
                 for (label, href) in user_menu_items() {
                     UserMenuItem {
-                        label: label.to_string(),
-                        href: href.to_string(),
+                        href: href.clone(),
+                        label: label,
                     }
                 }
             }

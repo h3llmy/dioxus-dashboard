@@ -7,5 +7,13 @@ use dioxus::prelude::*;
 pub enum Route {
     #[layout(DashboardLayout)]
     #[route("/")]
-    Home {},
+    Dashboard {},
+
+    #[nest("/kanban")]
+        #[route("")]
+        Kanban {},
+        #[route("/:id")]
+        KanbanDetail {
+            id: String,
+        },
 }
