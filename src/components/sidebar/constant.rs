@@ -1,7 +1,6 @@
 use dioxus::prelude::*;
 use crate::components::sidebar::menu::MenuItem;
 
-#[component]
 pub fn menu_items() -> Vec<MenuItem> {
     vec![
         MenuItem { label: "Dashboard".into(), href: "/dashboard".into(), icon: icons::icon_1 },
