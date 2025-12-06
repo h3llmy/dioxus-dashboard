@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::components::navbar::MenuItem;
+use crate::components::navbar::{UserMenuItem, user_menu_items};
 
 #[component]
 pub fn UserMenu(user_menu_open: Signal<bool>) -> Element {
@@ -33,10 +33,12 @@ pub fn UserMenu(user_menu_open: Signal<bool>) -> Element {
 
             ul { class: "py-1", role: "none",
 
-                MenuItem { label: "Dashboard" }
-                MenuItem { label: "Settings" }
-                MenuItem { label: "Earnings" }
-                MenuItem { label: "Sign out" }
+                for (label, href) in user_menu_items() {
+                    UserMenuItem {
+                        label: label.to_string(),
+                        href: href.to_string(),
+                    }
+                }
             }
         }
     }
