@@ -12,9 +12,12 @@ pub fn DashboardLayout() -> Element {
         }
 
         // This is where the routed content will go
-        div { class: "p-4 sm:ml-64",
-            div { class: "p-4 mt-14",
-                Outlet::<Route> {}
+        div {
+            class: "bg-white dark:bg-gray-900 h-screen overflow-auto w-full dark:text-white",
+            div { class: "p-4 sm:ml-64",
+                div { class: "p-4 mt-14",
+                    Outlet::<Route> {}
+                }
             }
         }
 
