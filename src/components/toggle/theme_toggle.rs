@@ -3,9 +3,8 @@ use dioxus_sdk_storage::{LocalStorage, use_synced_storage};
 use web_sys::{HtmlElement, window};
 use wasm_bindgen::JsCast;
 
-#[component]
-pub fn ThemeToggle() -> Element {
-    let mut dark: Signal<bool> = use_synced_storage::<LocalStorage, bool>("theme".to_string(), || false);
+pub fn use_dark_mode() -> Signal<bool> {
+    let dark: Signal<bool> = use_synced_storage::<LocalStorage, bool>("theme".to_string(), || false);
 
     use_effect({
         let dark: Signal<bool> = dark.clone();
@@ -15,7 +14,12 @@ pub fn ThemeToggle() -> Element {
             html.set_class_name(if dark() { "dark" } else { "" });
         }
     });
-    
+    dark
+}
+
+#[component]
+pub fn ThemeToggle() -> Element {
+    let mut dark: Signal<bool> = use_dark_mode();
 
     rsx! {
         button {
