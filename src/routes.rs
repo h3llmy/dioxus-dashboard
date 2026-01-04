@@ -5,6 +5,9 @@ use dioxus::prelude::*;
 #[derive(Debug, Clone, Routable, PartialEq)]
 #[rustfmt::skip]
 pub enum Route {
+    #[route("/login")]
+    Login {},
+
     #[layout(DashboardLayout)]
     #[route("/")]
     Dashboard {},
@@ -16,4 +19,8 @@ pub enum Route {
         KanbanDetail {
             id: String,
         },
+    #[end_nest]
+    
+    #[route("/:..segments")]
+    NotFound { segments: Vec<String> },
 }

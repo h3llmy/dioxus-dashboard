@@ -4856,6 +4856,8 @@ dependencies = [
  "dioxus",
  "dioxus-logger",
  "dioxus-sdk-storage",
+ "serde",
+ "serde_json",
  "wasm-bindgen",
  "web-sys",
 ]

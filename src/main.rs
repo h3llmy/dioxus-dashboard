@@ -2,8 +2,9 @@ mod backend;
 mod components;
 mod pages;
 mod routes;
+mod hooks;
 
-use crate::routes::Route;
+use crate::{hooks::use_dark_mode, routes::Route};
 use dioxus::prelude::*;
 use dioxus_logger::tracing::Level;
 
@@ -13,6 +14,8 @@ const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
 
 #[component]
 fn App() -> Element {
+    use_dark_mode();
+    
     rsx! {
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: MAIN_CSS }

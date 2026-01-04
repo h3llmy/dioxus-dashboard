@@ -5,6 +5,6 @@ pub fn user_menu_items() -> Vec<(&'static str, Route)> {
         ("Dashboard",  Route::Dashboard { }),
         // ("Settings", "/settings"),
         // ("Earnings", "/earnings"),
-        // ("Sign out", "/signout"),
+        ("Sign out", Route::Login { }),
     ]
 }

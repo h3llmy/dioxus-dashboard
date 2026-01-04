@@ -33,11 +33,8 @@ pub fn UserMenu(user_menu_open: Signal<bool>) -> Element {
 
             ul { class: "py-1", role: "none",
 
-                for (label, href) in user_menu_items() {
-                    UserMenuItem {
-                        href: href.clone(),
-                        label: label,
-                    }
+                for (label , href) in user_menu_items() {
+                    UserMenuItem { href: href.clone(), label }
                 }
             }
         }
