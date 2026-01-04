@@ -515,8 +515,8 @@
   .pt-20 {
     padding-top: calc(var(--spacing) * 20);
   }
-  .pr-10 {
-    padding-right: calc(var(--spacing) * 10);
+  .pr-14 {
+    padding-right: calc(var(--spacing) * 14);
   }
   .pb-4 {
     padding-bottom: calc(var(--spacing) * 4);
@@ -701,6 +701,16 @@
     &:focus {
       --tw-outline-style: none;
       outline-style: none;
+    }
+  }
+  .disabled\:cursor-not-allowed {
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+  .disabled\:opacity-50 {
+    &:disabled {
+      opacity: 50%;
     }
   }
   .sm\:ml-64 {

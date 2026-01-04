@@ -1,12 +1,14 @@
 use dioxus::prelude::*;
 
-use crate::backend::login;
+use crate::backend::{LoginRequest, login};
 
 #[component]
 pub fn Login() -> Element {
-    let mut show_password: Signal<bool> = use_signal::<bool>(|| false);
-    let mut username: Signal<String> = use_signal::<String>(|| "".to_string());
-    let mut password: Signal<String> = use_signal::<String>(|| "".to_string());
+    let mut show_password: Signal<bool> = use_signal(|| false);
+    let mut username: Signal<String> = use_signal(|| String::new());
+    let mut password: Signal<String> = use_signal(|| String::new());
+    let mut loading: Signal<bool> = use_signal(|| false);
+
     let nav = use_navigator();
 
     rsx! {
@@ -36,14 +38,17 @@ pub fn Login() -> Element {
                     onsubmit: move |evt: FormEvent| async move {
                         evt.prevent_default();
 
-                        match login(username(), password()).await {
+                        loading.set(true);
+                        match login(LoginRequest::new(username(), password())).await {
                             Ok(_) => {
                                 info!("Login successful");
+                                nav.push(crate::routes::Route::Dashboard {});
                             }
                             Err(e) => {
                                 info!("Login failed: {:?}", e);
                             }
                         }
+                        loading.set(false);
                     },
 
                     // Email
@@ -55,6 +60,8 @@ pub fn Login() -> Element {
                             name: "email",
                             id: "email",
                             r#type: "email",
+                            value: "{username}",
+                            oninput: move |e| username.set(e.value().clone()),
                             placeholder: "you@example.com",
                             required: true,
                             class: "
@@ -79,11 +86,13 @@ pub fn Login() -> Element {
                             input {
                                 name: "password",
                                 id: "password",
+                                value: "{password}",
+                                oninput: move |e| password.set(e.value().clone()),
                                 r#type: if show_password() { "text" } else { "password" },
                                 placeholder: "••••••••",
                                 required: true,
                                 class: "
-                                    w-full px-3 py-2 pr-10
+                                    w-full px-3 py-2 pr-14
                                     rounded-md
                                     border border-gray-300 dark:border-gray-600
                                     bg-white dark:bg-gray-700
@@ -130,15 +139,23 @@ pub fn Login() -> Element {
                     // Submit
                     button {
                         r#type: "submit",
+                        disabled: loading(),
                         class: "
                             w-full py-2.5
                             rounded-md
                             bg-blue-600 hover:bg-blue-700
                             text-white font-medium
                             transition-colors
+                            disabled:opacity-50
+                            disabled:cursor-not-allowed
                         ",
-                        "Sign In"
+                        if loading() {
+                            "Signing in..."
+                        } else {
+                            "Sign In"
+                        }
                     }
+                
                 }
 
                 // Footer
