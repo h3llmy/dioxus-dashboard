@@ -46,9 +46,7 @@ pub fn SidebarMenu(menu_item: MenuItem) -> Element {
 
     rsx! {
         li {
-            Link {
-                to: menu_item.href.clone(),
-                class: "{classes}",
+            Link { to: menu_item.href.clone(), class: "{classes}",
 
                 {(menu_item.icon)(is_active)}
 

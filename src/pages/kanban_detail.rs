@@ -4,8 +4,6 @@ use dioxus::prelude::*;
 #[component]
 pub fn KanbanDetail(id: String) -> Element {
     rsx! {
-        div {
-            "This is the Kanban page detail. ID: {id}"
-        }
+        div { "This is the Kanban page detail. ID: {id}" }
     }
 }

@@ -12,3 +12,6 @@ pub use kanban_detail::*;
 
 pub mod login;
 pub use login::*;
+
+pub mod forget_password;
+pub use forget_password::*;

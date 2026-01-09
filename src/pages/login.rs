@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{backend::{LoginRequest, login}, components::{card::AuthCard, input::{PasswordInput, TextInput}}};
+use crate::{backend::{LoginRequest, login}, components::{card::AuthCard, input::{PasswordInput, TextInput}}, routes::Route};
 
 #[component]
 pub fn Login() -> Element {
@@ -73,8 +73,8 @@ pub fn Login() -> Element {
                         "Remember me"
                     }
 
-                    a {
-                        href: "#",
+                    Link {
+                        to: Route::ForgetPassword {},
                         class: "text-sm text-blue-600 hover:underline",
                         "Forgot password?"
                     }
@@ -103,7 +103,6 @@ pub fn Login() -> Element {
                         "Sign In"
                     }
                 }
-            
             }
 
             // Footer

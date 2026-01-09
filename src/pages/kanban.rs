@@ -4,8 +4,6 @@ use dioxus::prelude::*;
 #[component]
 pub fn Kanban() -> Element {
     rsx! {
-        div {
-            "This is the Kanban page."
-        }
+        div { "This is the Kanban page." }
     }
 }

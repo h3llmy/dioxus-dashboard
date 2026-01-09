@@ -26,7 +26,7 @@ pub fn Sidebar(sidebar_open: ReadSignal<bool>) -> Element {
                 ul { class: "space-y-2 font-medium",
                     for menu in menu_items() {
                         SidebarMenu { menu_item: menu.clone() }
-                    },
+                    }
                 }
             }
         }

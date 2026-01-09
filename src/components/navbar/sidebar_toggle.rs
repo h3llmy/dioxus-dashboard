@@ -20,7 +20,7 @@ pub fn SidebarToggle(sidebar_toggle: WriteSignal<bool>) -> Element {
 mod icons {
     use super::*;
     pub(crate) fn logo_icon() -> Element {
-        rsx! { 
+        rsx! {
             svg {
                 class: "w-6 h-6",
                 fill: "currentColor",
