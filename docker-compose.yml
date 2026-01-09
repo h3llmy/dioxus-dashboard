@@ -1,0 +1,12 @@
+networks:
+  myapp:
+    driver: bridge
+
+services:
+  web:
+    container_name: web
+    build: .
+    ports:
+      - "8080:8080"
+    networks:
+      - myapp

@@ -20,6 +20,7 @@ pub enum Route {
             id: String,
         },
     #[end_nest]
+    #[end_layout]
     
     #[route("/:..segments")]
     NotFound { segments: Vec<String> },

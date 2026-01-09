@@ -26,7 +26,21 @@ fn App() -> Element {
 
 fn main() {
     dioxus::logger::init(Level::INFO).expect("failed innit logger");
-    dioxus_sdk_storage::set_dir!();
+    
+    
+    #[cfg(not(feature = "server"))]
+    {
+        dioxus_sdk_storage::set_dir!();
+        info!("Starting in client mode");
+        dioxus::launch(App);
+    }
 
-    dioxus::launch(App);
+    #[cfg(feature = "server")]
+    dioxus::serve(|| async {
+        let router = dioxus::server::router(App);
+
+        info!("Starting in server mode");
+
+        Ok(router)
+    });
 }

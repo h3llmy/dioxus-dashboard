@@ -3,14 +3,8 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct LoginRequest {
-    username: String,
-    password: String,
-}
-
-impl LoginRequest {
-    pub fn new(username: String, password: String) -> Self {
-        Self { username, password }
-    }
+    pub username: String,
+    pub password: String,
 }
 
 #[derive(Serialize, Deserialize)]
