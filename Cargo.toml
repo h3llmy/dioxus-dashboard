@@ -11,13 +11,15 @@ dioxus = { version = "0.7.2", features = ["router", "fullstack"] }
 dioxus-logger = "0.7.2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+uuid = { version = "1.18", features = ["v4", "js"] }
+gloo-timers = { version = "0.3", features = ["futures"] }
 
 # web dependencies
 dioxus-sdk-storage = { version = "0.7.0", optional = true }
 wasm-bindgen = { version = "0.2", optional = true }
 
 # server dependencies
-# tokio = { version = "1.0", features = ["full"], optional = true }
+# tokio = { version = "1.0", features = ["full"] }
 sea-orm = { version = "2.0.0-rc", optional = true, features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"] }
 
 [dependencies.web-sys]
