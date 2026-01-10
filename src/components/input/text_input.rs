@@ -16,6 +16,10 @@ pub struct TextInputProps {
 
     #[props(optional)]
     pub r#type: String,
+
+    #[props(optional)]
+    pub error: Option<String>,
+
     pub name: String,
     pub label: String,
     pub id: String,
@@ -45,6 +49,10 @@ pub fn TextInput(props: TextInputProps) -> Element {
                     placeholder-gray-400
                     focus:outline-none focus:ring-2 focus:ring-blue-500
             ",
+            }
+
+            if props.error.is_some() {
+                p { class: "mt-1 text-sm text-red-600 dark:text-red-400", {props.error} }
             }
         }
     }

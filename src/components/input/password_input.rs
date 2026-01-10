@@ -23,6 +23,9 @@ pub struct PasswordInputProps {
     #[props(optional)]
     pub password_hidden: Option<bool>,
 
+    #[props(optional)]
+    pub error: Option<String>,
+
     pub name: String,
     pub label: String,
     pub id: String,
@@ -72,6 +75,10 @@ pub fn PasswordInput(props: PasswordInputProps) -> Element {
                             "Show"
                         }
                     }
+                }
+
+                if props.error.is_some() {
+                    p { class: "mt-1 text-sm text-red-600 dark:text-red-400", {props.error} }
                 }
             }
         }

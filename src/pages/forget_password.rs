@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 
 use crate::components::{card::AuthCard, input::TextInput};
+use crate::routes::Route;
 
 #[component]
 pub fn ForgetPassword() -> Element {
@@ -25,6 +26,15 @@ pub fn ForgetPassword() -> Element {
                         focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
                     ",
                     "Send Reset Link"
+                }
+
+                p { class: "mt-6 text-center text-sm text-gray-600 dark:text-gray-400",
+                    "Already have an account? "
+                    Link {
+                        to: Route::Login {},
+                        class: "text-blue-600 hover:underline font-medium",
+                        "Back to Login"
+                    }
                 }
             }
         }

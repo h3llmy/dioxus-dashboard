@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{backend::{LoginRequest, login}, components::{card::AuthCard, input::{PasswordInput, TextInput}}, routes::Route};
+use crate::{backend::{LoginRequest, login}, components::{card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastData, ToastKind}}, routes::Route};
 
 #[component]
 pub fn Login() -> Element {
@@ -9,8 +9,9 @@ pub fn Login() -> Element {
     let mut username: Signal<String> = use_signal(|| "admin@some.mail".to_string());
     let mut password: Signal<String> = use_signal(|| "password".to_string());
     let mut loading: Signal<bool> = use_signal(|| false);
+    let mut toast_ctx: ToastContext = use_context::<ToastContext>();
 
-    let nav = use_navigator();
+    let nav: dioxus_router::Navigator = use_navigator();
 
     rsx! {
         AuthCard { header: Some("Sign in to your account".to_string()),
@@ -28,10 +29,24 @@ pub fn Login() -> Element {
                         .await
                     {
                         Ok(_) => {
+                            toast_ctx
+                                .toasts
+                                .write()
+                                .push(ToastData {
+                                    message: "Login successful".to_string(),
+                                    kind: ToastKind::Success,
+                                });
                             info!("Login successful");
                             nav.push(crate::routes::Route::Dashboard {});
                         }
                         Err(e) => {
+                            toast_ctx
+                                .toasts
+                                .write()
+                                .push(ToastData {
+                                    message: "Login failed".to_string(),
+                                    kind: ToastKind::Error,
+                                });
                             info!("Login failed: {:?}", e);
                         }
                     }

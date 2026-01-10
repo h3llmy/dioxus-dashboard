@@ -18,7 +18,7 @@ wasm-bindgen = { version = "0.2", optional = true }
 
 # server dependencies
 # tokio = { version = "1.0", features = ["full"], optional = true }
-# sea-orm = { version = "2.0.0-rc", optional = true, features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"] }
+sea-orm = { version = "2.0.0-rc", optional = true, features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"] }
 
 [dependencies.web-sys]
 version = "0.3"
@@ -34,4 +34,4 @@ default = ["web", "server", "wasm-bindgen", "dioxus-sdk-storage", "web-sys"]
 web = ["dioxus/web"]
 desktop = ["dioxus/desktop"]
 mobile = ["dioxus/mobile"]
-server = ["dioxus/server"]
+server = ["dioxus/server", "dep:sea-orm"]
