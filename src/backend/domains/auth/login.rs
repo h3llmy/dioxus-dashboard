@@ -15,6 +15,7 @@ pub struct LoginResponse {
 // Our form endpoint
 #[post("/api/login")]
 pub async fn login(login_request: LoginRequest) -> Result<LoginResponse, HttpError> {
+    // let db = crate::backend::database::connection::db();
     if login_request.username == "admin@some.mail" && login_request.password == "password" {
         Ok(LoginResponse {
             message: "Login successful".to_string(),

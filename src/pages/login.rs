@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{backend::{LoginRequest, login}, components::{card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastData, ToastKind}}, routes::Route};
+use crate::{backend::{LoginRequest, login}, components::{card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastKind}}, routes::Route};
 
 #[component]
 pub fn Login() -> Element {
@@ -29,19 +29,19 @@ pub fn Login() -> Element {
                         .await
                     {
                         Ok(_) => {
-                            // toast_ctx
-                            //     .toasts
-                            //     .write()
-                            //     .push(ToastData {
-                            //         message: "Login successful".to_string(),
-                            //         kind: ToastKind::Success,
-                            //     });
                             toast_ctx.push("Login successful".to_string(), ToastKind::Success);
                             info!("Login successful");
                             nav.push(crate::routes::Route::Dashboard {});
                         }
                         Err(e) => {
-                            toast_ctx.push(format!("Login failed: {:?}", e), ToastKind::Error);
+                            toast_ctx
+                                .push(
+                                    format!(
+                                        "Login failed: {}",
+                                        e.message.as_deref().unwrap_or("Something went wrong"),
+                                    ),
+                                    ToastKind::Error,
+                                );
                             info!("Login failed: {:?}", e);
                         }
                     }

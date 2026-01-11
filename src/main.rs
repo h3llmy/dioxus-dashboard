@@ -26,7 +26,11 @@ fn App() -> Element {
 
 #[cfg(feature = "server")]
 fn start_server() {
-    dioxus::serve(|| async {
+    dioxus::serve(|| async move {
+        // use crate::backend::database::connection::{init_db, db};
+
+        // init_db().await;
+
         let router = dioxus::server::router(App);
 
         info!("Starting in server mode");
