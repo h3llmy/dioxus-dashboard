@@ -1,2 +1,2 @@
-pub mod login;
-pub use login::*;
+pub mod auth_controller;
+pub use auth_controller::*;

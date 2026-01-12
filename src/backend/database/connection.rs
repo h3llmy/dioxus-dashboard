@@ -1,33 +1,39 @@
+// #![cfg(feature = "server")]
+
+// use sqlx::PgPool;
+// use tokio::sync::OnceCell;
+
+// static DB: OnceCell<PgPool> = OnceCell::const_new();
+
+// async fn init_db() -> PgPool {
+//     PgPool::connect("postgresql://postgres:postgres@localhost:5432/postgres")
+//         .await
+//         .expect("Failed to connect to Postgres")
+// }
+
+// pub async fn get_db() -> &'static PgPool {
+//     DB.get_or_init(init_db).await
+// }
+
+
 #![cfg(feature = "server")]
 
-use sea_orm::{Database, DatabaseConnection};
+use sqlx::SqlitePool;
 use tokio::sync::OnceCell;
-use std::path::Path;
+use std::env;
 
-static DB: OnceCell<DatabaseConnection> = OnceCell::const_new();
+static DB: OnceCell<SqlitePool> = OnceCell::const_new();
 
-/// Initialize the database connection (call once at server startup)
-pub async fn init_db() -> &'static DatabaseConnection {
-    DB.get_or_init(|| async {
-        let db_path = "./data/app.db";
 
-        // Ensure the directory exists
-        if let Some(parent) = Path::new(db_path).parent() {
-            std::fs::create_dir_all(parent)
-                .expect("Failed to create database directory");
-        }
+async fn init_db() -> SqlitePool {
+    let database_url = env::var("DATABASE_URL")
+        .expect("DATABASE_URL must be set in .env");
 
-        let database_url = format!("sqlite://{}?mode=rwc", db_path);
-
-        Database::connect(&database_url)
-            .await
-            .expect("Failed to connect to database")
-    })
-    .await
+    SqlitePool::connect(&database_url)
+        .await
+        .expect("Failed to connect to SQLite")
 }
 
-/// Get a reference to the initialized database
-/// (safe to call inside handlers / server functions)
-pub fn db() -> &'static DatabaseConnection {
-    DB.get().expect("Database not initialized. Call init_db() first.")
+pub async fn get_db() -> &'static SqlitePool {
+    DB.get_or_init(init_db).await
 }
