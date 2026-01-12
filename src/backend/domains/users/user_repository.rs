@@ -14,9 +14,3 @@ pub struct User {
     pub created_at: Option<String>,
     pub updated_at: Option<String>,
 }
-
-impl User {
-    pub fn new(id: i32, email: String, username: String, password_hash: String, is_active: bool, is_verified: bool, created_at: Option<String>, updated_at: Option<String>) -> Self {
-        Self { id, email, username, password_hash, is_active, is_verified, created_at, updated_at }
-    }
-}

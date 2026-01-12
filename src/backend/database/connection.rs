@@ -29,9 +29,16 @@ async fn init_db() -> SqlitePool {
     let database_url = env::var("DATABASE_URL")
         .expect("DATABASE_URL must be set in .env");
 
-    SqlitePool::connect(&database_url)
+    let pool = SqlitePool::connect(&database_url)
         .await
-        .expect("Failed to connect to SQLite")
+        .expect("Failed to connect to SQLite");
+
+    sqlx::migrate!("./migrations")
+        .run(&pool)
+        .await
+        .expect("Failed to run migrations");
+
+    pool
 }
 
 pub async fn get_db() -> &'static SqlitePool {

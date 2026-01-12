@@ -1,22 +1,12 @@
 use dioxus::prelude::*;
-use serde::{Deserialize, Serialize};
+
+use crate::backend::{LoginRequest, LoginResponse};
 
 #[cfg(feature = "server")]
 use crate::backend::database::connection::get_db;
 
 #[cfg(feature = "server")]
-use crate::backend::domains::users::user_model::User;
-
-#[derive(Serialize, Deserialize)]
-pub struct LoginRequest {
-    pub username: String,
-    pub password: String,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct LoginResponse {
-    pub message: String,
-}
+use crate::backend::domains::users::user_repository::User;
 
 #[post("/api/login")]
 pub async fn login(

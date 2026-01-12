@@ -20,7 +20,7 @@ wasm-bindgen = { version = "0.2", optional = true }
 
 # server dependencies
 tokio = { version = "1.0", features = ["full"], optional = true }
-sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio"], optional = true }
+sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio", "tls-rustls", "migrate"], optional = true }
 dotenvy = { version = "0.15", optional = true }
 
 [dependencies.web-sys]
