@@ -5,7 +5,7 @@ use sqlx::prelude::FromRow;
 
 #[derive(Clone, PartialEq, Serialize, Deserialize, FromRow)]
 pub struct User {
-    pub id: i32,
+    pub id: i64,
     pub email: String,
     pub username: String,
     pub password_hash: String,

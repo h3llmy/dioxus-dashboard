@@ -1,12 +1,12 @@
 use dioxus::prelude::*;
 
-use crate::backend::{LoginRequest, LoginResponse};
+use crate::backend::{LoginRequest, LoginResponse, RegisterRequest, RegisterResponse};
 
 #[cfg(feature = "server")]
 use crate::backend::database::connection::get_db;
 
 #[cfg(feature = "server")]
-use crate::backend::domains::users::user_repository::User;
+use crate::backend::domains::users::user_entity::User;
 
 #[post("/api/login")]
 pub async fn login(
@@ -14,21 +14,10 @@ pub async fn login(
 ) -> Result<LoginResponse, HttpError> {
     let db = get_db().await;
 
-    // let create_result = sqlx::query!("INSERT INTO users (email, username, password_hash, is_active, is_verified) VALUES (?, ?, ?, ?, ?)",
-    //     login_request.username, login_request.username, login_request.password, true, true)
-    //     .execute(db)
-    //     .await;
-
-    // if create_result.is_err() {
-    //     return HttpError::internal_server_error(
-    //         "Failed to create user",
-    //     );
-    // }
-
     let result = sqlx::query_as::<_, User>(
         "SELECT * FROM users WHERE email = ?"
     )
-    .bind(&login_request.username)
+    .bind(&login_request.email)
     .fetch_optional(db)
     .await;
 
@@ -54,5 +43,83 @@ pub async fn login(
 
     Ok(LoginResponse {
         message: "Login successful".to_string(),
+    })
+}
+
+
+#[post("/api/register")]
+pub async fn register(
+    register_request: RegisterRequest,
+) -> Result<RegisterResponse, HttpError> {
+    let db = get_db().await;
+
+    let result = sqlx::query!(
+        r#"
+        INSERT INTO users (email, username, password_hash, is_active, is_verified)
+        VALUES (?, ?, ?, ?, ?)
+        "#,
+        register_request.email,
+        register_request.username,
+        register_request.password, // ⚠ hash in real code
+        true,
+        true
+    )
+    .execute(db)
+    .await;
+
+    let insert_result = match result {
+        Ok(res) => res,
+        Err(err) => {
+            error!("Register failed: {:?}", err);
+
+            if let sqlx::Error::Database(db_err) = &err {
+                let msg = db_err.message();
+
+                if msg.contains("email") {
+                    return HttpError::bad_request(
+                        "Email already exists",
+                    );
+                }
+
+                if msg.contains("username") {
+                    return HttpError::bad_request(
+                        "Username already exists",
+                    );
+                }
+            }
+
+            return HttpError::internal_server_error(
+                "Failed to create user",
+            );
+        }
+    };
+
+    // SQLite: get last inserted id
+    let user_id = insert_result.last_insert_rowid();
+
+    // Fetch created user
+    let user_results = sqlx::query!(
+        r#"
+        SELECT id, email, username
+        FROM users
+        WHERE id = ?
+        "#,
+        user_id
+    )
+    .fetch_one(db)
+    .await;
+
+    let user = match user_results {
+        Err(err) => {
+            error!("Fetch created user failed: {:?}", err);
+            return HttpError::internal_server_error(
+                "Failed to fetch created user",
+            );
+        }
+        Ok(user) => user,
+    };
+
+    Ok(RegisterResponse {
+        message: format!("User {} registered successfully", user.username),
     })
 }

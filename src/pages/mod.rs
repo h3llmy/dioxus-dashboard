@@ -15,3 +15,6 @@ pub use login::*;
 
 pub mod forget_password;
 pub use forget_password::*;
+
+pub mod register;
+pub use register::*;

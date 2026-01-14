@@ -3,6 +3,7 @@ mod components;
 mod pages;
 mod routes;
 mod hooks;
+mod utils;
 
 use crate::{components::toast::ToastProvider, hooks::use_dark_mode, routes::Route};
 use dioxus::prelude::*;
