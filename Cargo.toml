@@ -19,8 +19,11 @@ dioxus-sdk-storage = { version = "0.7.0", optional = true }
 wasm-bindgen = { version = "0.2", optional = true }
 
 # server dependencies
-# tokio = { version = "1.0", features = ["full"] }
-sea-orm = { version = "2.0.0-rc", optional = true, features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"] }
+tokio = { version = "1.0", features = ["full"], optional = true }
+sqlx = { version = "0.8", features = ["sqlite", "runtime-tokio", "tls-rustls", "migrate"], optional = true }
+dotenvy = { version = "0.15", optional = true }
+argon2 = { version = "0.5", optional = true }
+rand_core = { version = "0.6", features = ["std"], optional = true }
 
 [dependencies.web-sys]
 version = "0.3"
@@ -36,4 +39,4 @@ default = ["web", "server", "wasm-bindgen", "dioxus-sdk-storage", "web-sys"]
 web = ["dioxus/web"]
 desktop = ["dioxus/desktop"]
 mobile = ["dioxus/mobile"]
-server = ["dioxus/server", "dep:sea-orm"]
+server = ["dioxus/server", "dep:tokio", "dep:sqlx", "dep:dotenvy", "dep:argon2", "dep:rand_core"]

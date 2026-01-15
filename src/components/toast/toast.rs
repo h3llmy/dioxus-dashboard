@@ -24,7 +24,9 @@ pub struct ToastContext {
 impl ToastContext {
     pub fn push(&mut self, message: String, kind: ToastKind) {
         let id = Uuid::new_v4();
-        self.toasts.write().push(ToastData { id, message, kind });
+        self.toasts
+            .write()
+            .insert(0, ToastData { id, message, kind });
     }
 
     pub fn remove(&mut self, id: Uuid) {
@@ -33,7 +35,13 @@ impl ToastContext {
 }
 
 #[derive(PartialEq, Clone)]
-pub enum ToastKind { Info, Success, Error, Warning }
+#[allow(dead_code)]
+pub enum ToastKind {
+    Info,
+    Success,
+    Error,
+    Warning
+}
 
 impl ToastKind {
     pub fn classes(&self) -> &'static str {
@@ -42,6 +50,15 @@ impl ToastKind {
             ToastKind::Success => "bg-green-50 border-green-200 text-green-800",
             ToastKind::Error => "bg-red-50 border-red-200 text-red-800",
             ToastKind::Warning => "bg-yellow-50 border-yellow-200 text-yellow-800",
+        }
+    }
+
+    pub fn icon(&self) -> &'static str {
+        match self {
+            ToastKind::Info => "ℹ️",
+            ToastKind::Success => "✅",
+            ToastKind::Error => "❌",
+            ToastKind::Warning => "⚠️",
         }
     }
 }
@@ -75,6 +92,7 @@ pub fn ToastProvider(children: Element) -> Element {
         }
     }
 }
+
 #[component]
 fn ToastItem(props: ToastItemProps) -> Element {
     let toast_id = props.toast.id;
@@ -93,12 +111,32 @@ fn ToastItem(props: ToastItemProps) -> Element {
             style: "animation: toast-in 0.3s ease-out forwards;",
             div {
                 class: format!(
-                    "w-72 p-4 rounded-lg shadow-lg border flex justify-between items-center {}",
+                    "w-72 p-4 rounded-lg shadow-lg border flex items-center gap-3 {}",
                     props.toast.kind.classes(),
                 ),
-                span { class: "text-sm font-medium", "{props.toast.message}" }
+
+                // ICON (perfectly centered)
+                span { class: "
+                        flex items-center justify-center
+                        w-6 h-6
+                        text-lg
+                        leading-none
+                        select-none
+                    ",
+                    "{props.toast.kind.icon()}"
+                }
+
+                // MESSAGE
+                span { class: "flex-1 text-sm font-medium leading-snug", "{props.toast.message}" }
+
+                // CLOSE BUTTON
                 button {
-                    class: "ml-4 opacity-70 hover:opacity-100 transition-opacity",
+                    class: "
+                        ml-2
+                        opacity-70 hover:opacity-100
+                        transition-opacity
+                        hover:cursor-pointer
+                    ",
                     onclick: move |_| props.on_remove.call(toast_id),
                     "✕"
                 }

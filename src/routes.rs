@@ -11,6 +11,9 @@ pub enum Route {
     #[route("/forget-password")]
     ForgetPassword {},
 
+    #[route("/register")]
+    Register {},
+
     #[layout(DashboardLayout)]
     #[route("/")]
     Dashboard {},

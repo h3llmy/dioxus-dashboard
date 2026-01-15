@@ -3,6 +3,7 @@ mod components;
 mod pages;
 mod routes;
 mod hooks;
+mod utils;
 
 use crate::{components::toast::ToastProvider, hooks::use_dark_mode, routes::Route};
 use dioxus::prelude::*;
@@ -26,7 +27,9 @@ fn App() -> Element {
 
 #[cfg(feature = "server")]
 fn start_server() {
-    dioxus::serve(|| async {
+    dotenvy::dotenv().ok();
+    
+    dioxus::serve(|| async move {
         let router = dioxus::server::router(App);
 
         info!("Starting in server mode");
