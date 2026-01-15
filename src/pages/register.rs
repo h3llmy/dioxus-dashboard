@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{backend::{RegisterRequest, register}, components::{card::AuthCard, input::TextInput}, routes::Route};
+use crate::{backend::{RegisterRequest, register}, components::{card::AuthCard, input::TextInput, toast::{ToastContext, ToastKind}}, routes::Route};
 
 #[component]
 pub fn Register() -> Element {
@@ -8,6 +8,9 @@ pub fn Register() -> Element {
     let mut email: Signal<String> = use_signal(|| String::new());
     let mut password: Signal<String> = use_signal(|| String::new());
     let mut loading: Signal<bool> = use_signal(|| false);
+    let mut toast_ctx: ToastContext = use_context::<ToastContext>();
+
+    let nav = use_navigator();
 
     rsx!(
         AuthCard { header: Some("Create a new account".to_string()),
@@ -25,13 +28,23 @@ pub fn Register() -> Element {
                     {
                         Ok(_) => {
                             info!("Registration successful");
+                            toast_ctx
+                                .push("Registration successful".to_string(), ToastKind::Success);
+                            nav.push(Route::Login {});
                         }
                         Err(e) => {
+                            toast_ctx
+                                .push(
+                                    format!(
+                                        "Registration failed: {}",
+                                        e.message.as_deref().unwrap_or("Something went wrong"),
+                                    ),
+                                    ToastKind::Error,
+                                );
                             info!("Registration failed: {:?}", e);
                         }
                     }
                     loading.set(false);
-                    // Handle registration logic here
                 },
 
                 // Username

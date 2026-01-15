@@ -8,6 +8,9 @@ use crate::backend::database::connection::get_db;
 #[cfg(feature = "server")]
 use crate::backend::domains::users::user_entity::User;
 
+#[cfg(feature = "server")]
+use crate::utils::password_hash::{hash_password, verify_password};
+
 #[post("/api/login")]
 pub async fn login(
     login_request: LoginRequest,
@@ -35,7 +38,10 @@ pub async fn login(
         }
     };
 
-    if user.password_hash != login_request.password {
+    let is_password_valid =
+        verify_password(&user.password_hash, &login_request.password);
+
+    if !is_password_valid {
         return HttpError::unauthorized(
             "Invalid username or password",
         );
@@ -53,6 +59,16 @@ pub async fn register(
 ) -> Result<RegisterResponse, HttpError> {
     let db = get_db().await;
 
+    let password_hash = match hash_password(&register_request.password) {
+        Ok(hash) => hash,
+        Err(err) => {
+            error!("Password hashing failed: {:?}", err);
+            return HttpError::internal_server_error(
+                "Failed to hash password",
+            );
+        }
+    };
+
     let result = sqlx::query!(
         r#"
         INSERT INTO users (email, username, password_hash, is_active, is_verified)
@@ -60,7 +76,7 @@ pub async fn register(
         "#,
         register_request.email,
         register_request.username,
-        register_request.password, // ⚠ hash in real code
+        password_hash,
         true,
         true
     )
