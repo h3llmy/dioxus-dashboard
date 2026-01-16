@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{backend::{LoginRequest, login}, components::{card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastKind}}, routes::Route};
+use crate::{backend::{LoginRequest, login}, components::{button::{AuthButton, AuthFooterButton}, card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastKind}}, routes::Route};
 
 #[component]
 pub fn Login() -> Element {
@@ -31,7 +31,7 @@ pub fn Login() -> Element {
                         Ok(_) => {
                             toast_ctx.push("Login successful".to_string(), ToastKind::Success);
                             info!("Login successful");
-                            nav.push(crate::routes::Route::Dashboard {});
+                            nav.push(Route::Dashboard {});
                         }
                         Err(e) => {
                             toast_ctx
@@ -91,38 +91,18 @@ pub fn Login() -> Element {
                 }
 
                 // Submit
-                button {
-                    r#type: "submit",
-                    disabled: loading(),
-                    class: "
-                            w-full py-2.5
-                            rounded-md
-                            bg-blue-600 hover:bg-blue-700
-                            text-white font-medium
-                            transition-colors
-                            hover:cursor-pointer
-                            focus:outline-none
-                            focus:ring-2
-                            focus:ring-blue-500
-                            disabled:opacity-50
-                            disabled:cursor-not-allowed
-                        ",
-                    if loading() {
-                        "Signing in..."
-                    } else {
-                        "Sign In"
-                    }
+                AuthButton {
+                    disabled: false,
+                    label: "Sign In".to_string(),
+                    loading: loading.clone(),
                 }
             }
 
             // Footer
-            p { class: "mt-6 text-center text-sm text-gray-600 dark:text-gray-400",
-                "Don’t have an account? "
-                Link {
-                    to: Route::Register {},
-                    class: "text-blue-600 hover:underline font-medium",
-                    "Sign up"
-                }
+            AuthFooterButton {
+                text: "Don’t have an account? ".to_string(),
+                link_text: "Sign up".to_string(),
+                to: Route::Register {},
             }
         }
     }
