@@ -1,15 +1,6 @@
 #![cfg(feature = "server")]
 
-use argon2::{
-    password_hash::{
-        PasswordHash,
-        PasswordHasher,
-        PasswordVerifier,
-        SaltString,
-        rand_core::OsRng,
-    },
-    Argon2,
-};
+use argon2::{password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString, rand_core::OsRng}, Argon2};
 use dioxus::prelude::HttpError;
 
 pub fn hash_password(password: &str) -> Result<String, HttpError> {

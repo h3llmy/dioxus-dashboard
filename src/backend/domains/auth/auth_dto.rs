@@ -9,6 +9,8 @@ pub struct LoginRequest {
 #[derive(Serialize, Deserialize)]
 pub struct LoginResponse {
     pub message: String,
+    pub access_token: String,
+    pub refresh_token: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -21,4 +23,6 @@ pub struct RegisterRequest {
 #[derive(Serialize, Deserialize)]
 pub struct RegisterResponse {
     pub message: String,
+    pub access_token: String,
+    pub refresh_token: String,
 }
