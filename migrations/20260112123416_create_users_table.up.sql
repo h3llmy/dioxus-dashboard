@@ -1,13 +1,13 @@
 -- Add migration script here
 CREATE TABLE IF NOT EXISTS users (
-    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    id            INTEGER PRIMARY KEY,
 
     email         TEXT NOT NULL UNIQUE,
     username      TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
 
     is_active     INTEGER NOT NULL DEFAULT 1,
-    is_verified   INTEGER NOT NULL DEFAULT 0,
+    verified_at   DATETIME,
 
     created_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP

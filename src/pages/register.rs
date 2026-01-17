@@ -18,6 +18,7 @@ pub fn Register() -> Element {
                 class: "space-y-4",
                 onsubmit: move |evt: FormEvent| async move {
                     evt.prevent_default();
+                    let data = evt.data();
                     loading.set(true);
                     match register(RegisterRequest {
                             username: username(),
@@ -89,7 +90,6 @@ pub fn Register() -> Element {
                     label: "Register".to_string(),
                     loading: loading.clone(),
                 }
-            
             }
 
             // Footer

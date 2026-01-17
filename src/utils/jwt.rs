@@ -5,7 +5,7 @@ use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation}
 use serde::{Deserialize, Serialize};
 use std::env;
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct UserClaims {
     pub sub: i64,
     pub email: String,
@@ -44,64 +44,57 @@ impl TokenKind {
     }
 }
 
-/// ✅ Public API
-pub struct TokenManager;
+fn generate_token(
+    kind: TokenKind,
+    user: UserClaims,
+) -> Result<String, jsonwebtoken::errors::Error> {
+    let exp = (Utc::now() + kind.ttl())
+        .timestamp() as usize;
 
-impl TokenManager {
-    /* ---------- GENERATE ---------- */
+    let claims = Claims {
+        user,
+        exp,
+    };
 
-    pub fn generate_access_token(
-        user: UserClaims,
-    ) -> Result<String, jsonwebtoken::errors::Error> {
-        Self::generate(TokenKind::Access, user)
-    }
+    encode(
+        &Header::default(),
+        &claims,
+        &EncodingKey::from_secret(&kind.secret()),
+    )
+}
 
-    pub fn generate_refresh_token(
-        user: UserClaims,
-    ) -> Result<String, jsonwebtoken::errors::Error> {
-        Self::generate(TokenKind::Refresh, user)
-    }
+fn verify_token(
+    kind: TokenKind,
+    token: &str,
+) -> Result<Claims, jsonwebtoken::errors::Error> {
+    Ok(decode::<Claims>(
+        token,
+        &DecodingKey::from_secret(&kind.secret()),
+        &Validation::default(),
+    )?
+    .claims)
+}
 
-    /* ---------- VERIFY ---------- */
+pub fn generate_access_token(
+    user: UserClaims,
+) -> Result<String, jsonwebtoken::errors::Error> {
+    generate_token(TokenKind::Access, user)
+}
 
-    pub fn verify_access_token(
-        token: &str,
-    ) -> Result<Claims, jsonwebtoken::errors::Error> {
-        Self::verify(TokenKind::Access, token)
-    }
+pub fn verify_access_token(
+    token: &str,
+) -> Result<Claims, jsonwebtoken::errors::Error> {
+    verify_token(TokenKind::Access, token)
+}
 
-    pub fn verify_refresh_token(
-        token: &str,
-    ) -> Result<Claims, jsonwebtoken::errors::Error> {
-        Self::verify(TokenKind::Refresh, token)
-    }
+pub fn generate_refresh_token(
+    user: UserClaims,
+) -> Result<String, jsonwebtoken::errors::Error> {
+    generate_token(TokenKind::Refresh, user)
+}
 
-    /* ---------- INTERNAL ---------- */
-
-    fn generate(
-        kind: TokenKind,
-        user: UserClaims,
-    ) -> Result<String, jsonwebtoken::errors::Error> {
-        let exp = (Utc::now() + kind.ttl()).timestamp() as usize;
-
-        let claims = Claims { user, exp };
-
-        encode(
-            &Header::default(),
-            &claims,
-            &EncodingKey::from_secret(&kind.secret()),
-        )
-    }
-
-    fn verify(
-        kind: TokenKind,
-        token: &str,
-    ) -> Result<Claims, jsonwebtoken::errors::Error> {
-        Ok(decode::<Claims>(
-            token,
-            &DecodingKey::from_secret(&kind.secret()),
-            &Validation::default(),
-        )?
-        .claims)
-    }
+pub fn verify_refresh_token(
+    token: &str,
+) -> Result<Claims, jsonwebtoken::errors::Error> {
+    verify_token(TokenKind::Refresh, token)
 }

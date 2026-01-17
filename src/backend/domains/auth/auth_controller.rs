@@ -1,9 +1,37 @@
 use dioxus::prelude::*;
 
-use crate::{backend::{LoginRequest, LoginResponse, RegisterRequest, RegisterResponse}};
+use crate::backend::{LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, users::user_entity::User};
 
 #[cfg(feature = "server")]
-use crate::{backend::{database::connection::get_db, domains::users::user_entity::User}, utils::{password_hash::{hash_password, verify_password}, jwt::{UserClaims, TokenManager}}};
+use crate::{backend::{database::connection::get_db}, utils::{password_hash::{hash_password, verify_password}, jwt::{UserClaims, generate_access_token, generate_refresh_token}}};
+
+#[post("/api/test")]
+pub async fn test(login_request: LoginRequest) -> Result<User, HttpError> {
+    let db = get_db().await;
+
+    let result = sqlx::query_as::<_, User>(
+        "SELECT * FROM users WHERE email = ?"
+    )
+    .bind(&login_request.email)
+    .fetch_optional(db)
+    .await;
+
+    let user = match result {
+        Ok(Some(user)) => user,
+        Ok(None) => {
+            return HttpError::unauthorized(
+                "Invalid username or password",
+            );
+        }
+        Err(e) => {
+            return HttpError::internal_server_error(
+                e.to_string(),
+            );
+        }
+    };
+
+    Ok(user)
+}
 
 #[post("/api/login")]
 pub async fn login(
@@ -41,7 +69,7 @@ pub async fn login(
         );
     }
 
-    let access_token: String = match TokenManager::generate_access_token(UserClaims {
+    let access_token: String = match generate_access_token(UserClaims {
         sub: user.id,
         email: user.email.clone(),
     }) {
@@ -51,7 +79,7 @@ pub async fn login(
         }
     };
 
-    let refresh_token: String = match TokenManager::generate_refresh_token(UserClaims {
+    let refresh_token: String = match generate_refresh_token(UserClaims {
         sub: user.id,
         email: user.email.clone(),
     }) {
@@ -87,14 +115,13 @@ pub async fn register(
     // 2️⃣ Insert + RETURNING in one query
     let user = match sqlx::query!(
         r#"
-        INSERT INTO users (email, username, password_hash, is_active, is_verified)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO users (email, username, password_hash, is_active)
+        VALUES (?, ?, ?, ?)
         RETURNING id, email, username
         "#,
         register_request.email,
         register_request.username,
         password_hash,
-        true,
         true
     )
     .fetch_one(db)
@@ -120,7 +147,7 @@ pub async fn register(
         }
     };
 
-    let access_token: String = match TokenManager::generate_access_token(UserClaims {
+    let access_token: String = match generate_access_token(UserClaims {
         sub: user.id,
         email: user.email.clone(),
     }) {
@@ -130,7 +157,7 @@ pub async fn register(
         }
     };
 
-    let refresh_token: String = match TokenManager::generate_refresh_token(UserClaims {
+    let refresh_token: String = match generate_refresh_token(UserClaims {
         sub: user.id,
         email: user.email.clone(),
     }) {

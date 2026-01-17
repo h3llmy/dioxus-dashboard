@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{backend::{LoginRequest, login}, components::{button::{AuthButton, AuthFooterButton}, card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastKind}}, routes::Route};
+use crate::{backend::{LoginRequest, test}, components::{button::{AuthButton, AuthFooterButton}, card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastKind}}, routes::Route};
 
 #[component]
 pub fn Login() -> Element {
@@ -22,7 +22,7 @@ pub fn Login() -> Element {
                     evt.prevent_default();
 
                     loading.set(true);
-                    match login(LoginRequest {
+                    match test(LoginRequest {
                             email: email(),
                             password: password(),
                         })
@@ -33,6 +33,7 @@ pub fn Login() -> Element {
                             info!("Login successful");
                             nav.push(Route::Dashboard {});
                         }
+                        // why it goes here?
                         Err(e) => {
                             toast_ctx
                                 .push(
