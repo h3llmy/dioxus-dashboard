@@ -32,9 +32,15 @@ fn start_server() {
     dotenvy::dotenv().ok();
     
     dioxus::serve(|| async move {
+        use dioxus::{fullstack::extract::Request, html::script::r#async, server::axum::{self, middleware::Next}};
+
         run_migration().await;
 
-        let router = dioxus::server::router(App);
+        let router = dioxus::server::router(App)
+            .layer(axum::middleware::from_fn(|request: Request, next: Next| async move {
+                info!("Request: {}", request.uri());
+                next.run(request).await
+            }));
 
         info!("Starting in server mode");
 

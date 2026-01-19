@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{backend::{LoginRequest, test}, components::{button::{AuthButton, AuthFooterButton}, card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastKind}}, routes::Route};
+use crate::{backend::auth::{LoginRequest, login}, components::{button::{AuthButton, AuthFooterButton}, card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastKind}}, routes::Route};
 
 #[component]
 pub fn Login() -> Element {
@@ -22,7 +22,7 @@ pub fn Login() -> Element {
                     evt.prevent_default();
 
                     loading.set(true);
-                    match test(LoginRequest {
+                    match login(LoginRequest {
                             email: email(),
                             password: password(),
                         })

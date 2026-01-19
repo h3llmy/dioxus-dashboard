@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 
-use crate::{backend::{RegisterRequest, register}, components::{button::{AuthButton, AuthFooterButton}, card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastKind}}, routes::Route};
+use crate::{backend::auth::{RegisterRequest, register}, components::{button::{AuthButton, AuthFooterButton}, card::AuthCard, input::{PasswordInput, TextInput}, toast::{ToastContext, ToastKind}}, routes::Route};
 
 #[component]
 pub fn Register() -> Element {
@@ -18,7 +18,6 @@ pub fn Register() -> Element {
                 class: "space-y-4",
                 onsubmit: move |evt: FormEvent| async move {
                     evt.prevent_default();
-                    let data = evt.data();
                     loading.set(true);
                     match register(RegisterRequest {
                             username: username(),
